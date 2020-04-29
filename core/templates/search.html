@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% block content %}
+<section class="text-center mb-4 ml-4 mr-4">
+    <div class="row wow fadeIn mt-5">
+        <legend class='border-bottom mb-4 text-danger'>Searching for: <span style="color: white;">{{value}}</span></legend>
+        <table class="table text-success" >
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Added</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for advert in found_adverts %}
+                <tr class="main_data">
+                    <td><img src="{{advert.image.url}}" class="card-img-top"></td>
+                    <td><a href="{{advert.absolute_path}}">{{advert.title}}</a></td>
+                    <td>{{advert.quantity}}</td>
+                    <td>{{advert.price}}</td>
+                    <td>NEW</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

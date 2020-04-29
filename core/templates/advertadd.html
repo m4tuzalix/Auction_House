@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<main>
+    <div class="container">
+        <div class="mt-5">
+            <form method="POST" enctype="multipart/form-data">
+                {%csrf_token%}
+                <fieldset class='form-group' style="color: red;">
+                    <legend class='border-bottom mb-4 text-danger'>Add new advert</legend>
+                    {{form|crispy}}
+                </fieldset>
+                <div class='form-group'>
+                    <button class='btn btn-primary' type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </main>    
+{% endblock content %}

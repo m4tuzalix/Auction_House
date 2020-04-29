@@ -1,0 +1,38 @@
+body{
+    background: 
+        linear-gradient(
+            rgba(0, 0, 0, 0.703), 
+            rgba(0, 0, 0, 0.703)
+        ),
+        url("https://i.redd.it/k4n1xkzvktb21.jpg");
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+} 
+table.table.text-success thead{
+    color: white;
+    background-color: rgb(80, 40, 7);
+}
+
+tr.main_data{
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+tr.main_data td{
+    background-color: rgba(240, 248, 255, 0.411);
+    color: black;
+}
+
+tr.main_data td a{
+    text-decoration: none;
+    color: rgba(6, 75, 223, 0.979);
+}
+
+
+tr.main_data td img{
+    height: 50px;
+    width: 50px;
+}
