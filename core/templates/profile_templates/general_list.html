@@ -1,0 +1,57 @@
+{% extends "users_templates/profile.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load tag %}
+{% block adverts %}
+    {% if objects|length > 0 %}
+        <table class="table text-success text-center" >
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Posted</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for object in objects %}
+            {% if object.archive == False %}
+                <div class="work-container">
+                    <tr class="main_data">
+                        <td><img src="{{object.image.url}}" class="card-img-top"></td> <!-- image -->
+                        <td><a href="{% url 'advert' pk=object.id title=object.title %}">{{object.title}}</a></td> <!-- title -->
+                        <td><span class="badge badge-danger">${{object.price}}</span></td> <!-- price -->
+                        {% if object.posted|date_checker == "Today" %} <!-- tag to estimate if was posted today -->
+                            <td><span class="badge badge-warning">Today!</span></td>
+                        {% else %}
+                            <td><span class="badge badge-info">{{object.posted|days_counter}}d</span></td> <!-- if not today, counts the days since it was posted -->
+                        {% endif %}
+                    </tr>
+                </div>
+            {% else%}
+                    {% if editable %}
+                        <div class="work-container">
+                            <tr class="main_data">
+                                <td><img src="{{object.image.url}}" class="card-img-top"></td> <!-- image -->
+                                <td><a href="{% url 'archive' pk=object.id title=object.title %}">{{object.title}}</a></td> <!-- title -->
+                                <td><span class="badge badge-danger">${{object.price}}</span></td> <!-- price -->
+                                {% if object.posted|date_checker == "Today" %} <!-- tag to estimate if was posted today -->
+                                    <td><span class="badge badge-warning">Today!</span><span class="badge badge-info">ARCHIVE</span></td>
+                                {% else %}
+                                    <td><span class="badge badge-info">{{object.posted|days_counter}}d</span></td> <!-- if not today, counts the days since it was posted -->
+                                {% endif %}
+                            </tr>
+                        </div>
+                    {% endif %}
+            {% endif %}
+        {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination.html" %} <!--PAGINATION-->
+    {% else %}
+        <div class="work-container">
+            <h3>{{no_data}}</h3>
+        </div>
+    {% endif %}
+
+{% endblock adverts %}

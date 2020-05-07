@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from datetime import datetime
 from PIL import Image
 
 Advert_Categories = {
@@ -21,16 +22,18 @@ Advert_Categories = {
 }
 
 class Advert(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length = 100)
     category = models.CharField(choices=Advert_Categories, max_length=3)
     price = models.FloatField()
     quantity = models.IntegerField()
     description = models.TextField(max_length = 1000)
+    posted = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), blank=True, null=True) 
     image = models.ImageField(blank=True, upload_to="advert_images")
+    archive = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user} advert"
+        return self.title
     
     def save(self, *args, **kwargs):
         super(Advert, self).save(*args, **kwargs)
@@ -45,6 +48,19 @@ class Advert(models.Model):
             'pk':self.pk,
             'title':self.title
         })
+    
+    def final_price(self, amount): #// price to pay
+        return(int(amount) * self.price)
+
+class Bought(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    advert = models.ForeignKey(Advert, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    price = models.FloatField()
+    date = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.user} bought item'
 
 
 

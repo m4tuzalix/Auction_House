@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'users',
     'crispy_forms'
 ]
 
@@ -123,6 +124,9 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
+# LOGIN
+LOGIN_URL = "/login"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -130,6 +134,11 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core/static/'),
+]
+
+# tags
+TAGS_DIR = [
+    os.path.join(BASE_DIR, 'core/templatetags/'),
 ]
 
 # Crispy forms

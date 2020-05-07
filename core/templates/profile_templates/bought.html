@@ -1,0 +1,39 @@
+{% extends "users_templates/profile.html" %}
+{% load static %}
+{% block adverts %}
+    {% if objects|length > 0 %}
+        <table class="table text-success text-center" >
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>From</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for object in objects %}
+                <div class="work-container">
+                    <tr class="main_data bg-light">
+                        {% if object.advert.archive %}
+                            <td><a href="{% url 'archive' pk=object.advert.id title=object.advert.title %}">{{object.advert.title}}</a><span class="badge badge-info">ARCHIVE</span></td>
+                        {% else %}
+                            <td><a href="{% url 'advert' pk=object.advert.id title=object.advert.title %}">{{object.advert.title}}</a></td>
+                        {% endif %}
+                        <td>{{object.amount}}</td>
+                        <td>{{object.price}}</td>
+                        <td>{{object.date}}</td>
+                        <td><a href="{% url 'profile' object.advert.user.username %}">{{advert.user}}{{object.advert.user.username}}</a></td>
+                    </tr>
+                </div>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination.html" %}
+    {% else %}
+        <div class="work-container">
+            <h3>{{no_data}}</h3>
+        </div>
+    {% endif %}
+{% endblock adverts %}

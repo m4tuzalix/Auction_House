@@ -1,5 +1,112 @@
 {% extends "main.html" %}
 {% load static %}
 {% block content %}
-<h1>elo {{advert.title}}</h2>
+<section class="mb-4 ml-4 mr-4" id="advert_main_info">
+  <legend class='border-bottom mb-4 text-danger mt-5 text-center'>advert n.{{advert.pk}}</legend>
+  <div class="row wow fadeIn mt-5 h-50 bg-light">
+    <div class="col bg-light h-100" style="max-width: 50%;">
+      <img src="{{advert.image.url}}" class="card-img-top mt-3" style="max-width: 60%; max-height: 60%;">
+    </div>
+    <div class="col bg-light h-50 border-bottom mb-4" style="max-width: 50%;">
+      <h1 class="display-3 mt-3" style="word-break: break-all;">
+        {{advert.title}}
+      </h1>
+      {% if advert.archive %}
+        <h1>elo mordo</h1>
+      {% endif %}
+      <h6 class="mt-2">
+        <small>from </small><a href="{% url 'profile' advert.user.username %}">{{advert.user}}</a>
+      </h6>
+      <h4 class="mt-4" >
+        PRICE: ${{advert.price}}
+      </h4>
+      <!-- form start-->
+      <form method="POST" action='{% url 'confirmation' pk=advert.id title=advert.title %}' enctype="multipart/form-data">
+          {%csrf_token%}
+          <fieldset class='form-group' style="color: red;">
+              <div class="input-group" id="buy_section">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <svg class="bi bi-caret-left-fill" v-on:click="change_amount($event)" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path value="minus" d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 00-1.659-.753l-5.48 4.796a1 1 0 000 1.506z"/>
+                    </svg>
+                  </span>
+                </div>
+                <input type="number" id="amount" v-on:input="validation($event)" name="amount" class="form-control" style="max-width: 15%;" pattern="[0-9]">
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <svg class="bi bi-caret-right-fill" v-on:click="change_amount($event)" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path value="plus" d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 011.659-.753l5.48 4.796a1 1 0 010 1.506z"/>
+                    </svg>
+                  </span>
+                </div>
+                <div class="input-group-append">
+                  <span class="input-group-text" style="font-weight: bold;">
+                  / {{advert.quantity}}
+                  </span>
+                </div>
+              </div>
+          </fieldset>
+          <div class='form-group mt-5'>
+              <button :disabled='disable' class='btn btn-primary btn-lg' type="submit" style="width: 20%;">Buy</button>
+          </div>
+      </form>
+      <small v-show='disable' class="badge badge-danger">The max quantity is {{advert.quantity}}</small>
+      <!-- form end -->
+    </div>
+  </div>
+  <div class="row wow fadeIn h-75 bg-dark">
+    <div class="col bg-light h-100" style="max-width: 50%; word-break: break-all;">
+      <legend class='text-danger text-left border-bottom'>Description</legend>
+      <p class="lead">{{advert.description}}</p>
+    </div>
+    <div class="col bg-dark h-100" style="max-width: 50%; word-break: break-all;">
+      <legend class='text-danger text-left border-bottom'>User's other adverts</legend>
+    </div>
+  </div>
+</section>
+
+<script>
+  new Vue({
+  delimiters: ['[[', ']]'],
+  el:document.querySelector("#advert_main_info"),
+  data: { 
+      disable: false
+  },
+  methods: {
+    set_default_value(){
+      const input = this.$el.querySelector("#amount")
+      input.value = 1
+    },
+    change_amount(element){
+      const input = this.$el.querySelector("#amount")
+      if(!isNaN(parseInt(input.value))){
+        if(element.target.getAttribute("value") == "plus" && input.value < parseInt("{{advert.quantity}}")){
+          input.value = (1+parseInt(input.value))
+        }
+        else{
+          if(input.value > 1){
+            input.value = (parseInt(input.value)-1)
+          }
+        }
+      }
+      else{
+        input.value = 1
+      }
+    },
+    validation(element){
+      if(element.target.value > parseInt("{{advert.quantity}}")){
+        this.disable = true
+      }
+      else{
+        this.disable = false
+      }
+    }
+  },
+  mounted(){
+    this.set_default_value()
+  }
+  })
+</script>
+
 {% endblock %}

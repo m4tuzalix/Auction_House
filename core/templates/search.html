@@ -3,7 +3,7 @@
 <section class="text-center mb-4 ml-4 mr-4">
     <div class="row wow fadeIn mt-5">
         <legend class='border-bottom mb-4 text-danger'>Searching for: <span style="color: white;">{{value}}</span></legend>
-        <table class="table text-success" >
+        <table class="table text-success text-center" >
             <thead>
                 <tr>
                     <th>Photo</th>
@@ -18,13 +18,14 @@
                 <tr class="main_data">
                     <td><img src="{{advert.image.url}}" class="card-img-top"></td>
                     <td><a href="{{advert.absolute_path}}">{{advert.title}}</a></td>
-                    <td>{{advert.quantity}}</td>
-                    <td>{{advert.price}}</td>
-                    <td>NEW</td>
+                    <td><span class="badge badge-warning">{{advert.quantity}}</span></td>
+                    <td><span class="badge badge-danger">{{advert.price}}</span></td>
+                    <td><span class="badge badge-info">{{advert.posted}}</span></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    {% include "pagination.html" %}
 </section>
 {% endblock %}
