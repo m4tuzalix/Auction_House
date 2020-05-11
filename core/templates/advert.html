@@ -3,11 +3,11 @@
 {% block content %}
 <section class="mb-4 ml-4 mr-4" id="advert_main_info">
   <legend class='border-bottom mb-4 text-danger mt-5 text-center'>advert n.{{advert.pk}}</legend>
-  <div class="row wow fadeIn mt-5 h-50 bg-light">
-    <div class="col bg-light h-100" style="max-width: 50%;">
+  <div class="row wow fadeIn mt-5 bg-light">
+    <div class="col bg-light h-100">
       <img src="{{advert.image.url}}" class="card-img-top mt-3" style="max-width: 60%; max-height: 60%;">
     </div>
-    <div class="col bg-light h-50 border-bottom mb-4" style="max-width: 50%;">
+    <div class="col bg-light border-bottom mb-4">
       <h1 class="display-3 mt-3" style="word-break: break-all;">
         {{advert.title}}
       </h1>
@@ -45,6 +45,7 @@
                   / {{advert.quantity}}
                   </span>
                 </div>
+                <h4 class="ml-5">Ratings: {{rating}}</h4>
               </div>
           </fieldset>
           <div class='form-group mt-5'>
@@ -65,48 +66,46 @@
     </div>
   </div>
 </section>
-
 <script>
   new Vue({
-  delimiters: ['[[', ']]'],
-  el:document.querySelector("#advert_main_info"),
-  data: { 
-      disable: false
-  },
-  methods: {
-    set_default_value(){
-      const input = this.$el.querySelector("#amount")
-      input.value = 1
+    delimiters: ['[[', ']]'],
+    el:document.querySelector("#advert_main_info"),
+    data: { 
+        disable: false
     },
-    change_amount(element){
-      const input = this.$el.querySelector("#amount")
-      if(!isNaN(parseInt(input.value))){
-        if(element.target.getAttribute("value") == "plus" && input.value < parseInt("{{advert.quantity}}")){
-          input.value = (1+parseInt(input.value))
+    methods: {
+        set_default_value(){
+        const input = this.$el.querySelector("#amount")
+        input.value = 1
+        },
+        change_amount(element){
+        const input = this.$el.querySelector("#amount")
+        if(!isNaN(parseInt(input.value))){
+            if(element.target.getAttribute("value") == "plus" && input.value < parseInt("{{advert.quantity}}")){
+            input.value = (1+parseInt(input.value))
+            }
+            else{
+            if(input.value > 1){
+                input.value = (parseInt(input.value)-1)
+            }
+            }
         }
         else{
-          if(input.value > 1){
-            input.value = (parseInt(input.value)-1)
-          }
+            input.value = 1
         }
-      }
-      else{
-        input.value = 1
-      }
+        },
+        validation(element){
+        if(element.target.value > parseInt("{{advert.quantity}}")){
+            this.disable = true
+        }
+        else{
+            this.disable = false
+        }
+        }
     },
-    validation(element){
-      if(element.target.value > parseInt("{{advert.quantity}}")){
-        this.disable = true
-      }
-      else{
-        this.disable = false
-      }
+    mounted(){
+        this.set_default_value()
     }
-  },
-  mounted(){
-    this.set_default_value()
-  }
   })
 </script>
-
 {% endblock %}

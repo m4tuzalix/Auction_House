@@ -6,13 +6,25 @@ from django.contrib.auth.views import LoginView
 from django.views import View
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from core.models import Advert, Bought
+from core.models import Advert, Bought, AdvertComments
 from .models import Profile
+
 
 class MyLoginView(LoginView):
     def get_success_url(self):
         url = self.get_redirect_url()
         return url or reverse('profile', kwargs={'user': self.request.user.username})
+
+def Pagination(request, model, number):
+    paginator = Paginator(model, number)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    index = paginator.page_range.index(page_obj.number)
+    max_index = len(paginator.page_range)
+    start_index = index - 4 if index >= 4 else 0
+    end_index = index + 4 if index <= max_index - 4 else max_index
+    page_range = paginator.page_range[start_index:end_index]
+    return [page_obj, page_range]
 
 def ProfileModelBase(request, user, model): #// base profile context model
     new_user = User.objects.get(username=user)
@@ -28,11 +40,9 @@ def ProfileModelBase(request, user, model): #// base profile context model
     }
     if model is not None:
         objects = model.objects.filter(user=new_user)
-        paginator = Paginator(objects, 20)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        context["objects"] = page_obj
-        context["range"] = paginator.page_range
+        pagination = Pagination(request, objects, 5)
+        context["objects"] = pagination[0]
+        context["range"] = pagination[1]
     return context
 
 
@@ -41,7 +51,7 @@ class ProfileView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.kwargs["user"]
-        context = ProfileModelBase(request, user, None)   # or whoever `user` is
+        context = ProfileModelBase(request, user, None) 
         return render(request, self.template, context)
 
 class ProfileBoughtView(View):
@@ -49,7 +59,7 @@ class ProfileBoughtView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.kwargs["user"]
-        context = ProfileModelBase(request, user, Bought)   # or whoever `user` is
+        context = ProfileModelBase(request, user, Bought)   
         return render(request, self.template, context)
 
 class ProfileAdvertsView(View):
@@ -57,7 +67,7 @@ class ProfileAdvertsView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.kwargs["user"]
-        context = ProfileModelBase(request, user, Advert)   # or whoever `user` is
+        context = ProfileModelBase(request, user, Advert)  
         return render(request, self.template, context)
 
 class ProfileCommentsView(View):
@@ -65,7 +75,8 @@ class ProfileCommentsView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.kwargs["user"]
-        context = ProfileModelBase(request, user, Advert)   # or whoever `user` is
+        context = ProfileModelBase(request, user, AdvertComments)  
+        context["comments"] = True
         return render(request, self.template, context)
 
 class RegisterView(View):
@@ -82,3 +93,4 @@ class RegisterView(View):
     def get(self, request):
         form = self.form_class()
         return render(request, self.template, {'form':form})
+

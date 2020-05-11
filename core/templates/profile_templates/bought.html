@@ -10,6 +10,7 @@
                     <th>Price</th>
                     <th>Date</th>
                     <th>From</th>
+                    <th>Commented</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,11 @@
                         <td>{{object.price}}</td>
                         <td>{{object.date}}</td>
                         <td><a href="{% url 'profile' object.advert.user.username %}">{{advert.user}}{{object.advert.user.username}}</a></td>
+                        {% if object.comment == False %}
+                            <td><a href={% url 'comment' object.id %}>Comment</a></td>
+                        {% else %}
+                            <td>Commented</td>
+                        {% endif %}
                     </tr>
                 </div>
             {% endfor %}

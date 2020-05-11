@@ -1,0 +1,24 @@
+<table class="table text-success text-center" >
+    <thead>
+        <tr>
+            <th>Advert</th>
+            <th>Comment</th>
+            <th>Buyer</th>
+            <th>Rate</th>
+            <th>Posted</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in objects %}
+            <div class="work-container">
+                <tr class="main_data">
+                    <td>{{object.advert.advert.title}}</td>
+                    <td>{{object.content}}</td>
+                    <td>{{object.advert.user.username}}</td>
+                    <td>{{object.rating}}</td>
+                    <td>{{object.date}}</td>
+                </tr>
+            </div>
+        {% endfor %}
+    </tbody>
+</table>

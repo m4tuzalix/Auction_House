@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <main>
-    <div class="container">
-        <div class="mt-5">
+    <div class="container text-center text-primary">
+        <div class="mt-5 bg-dark opacity-5">
             <form method="POST">
                 {%csrf_token%}
                 <fieldset class='form-group'>
@@ -11,17 +11,15 @@
                     {{form|crispy}}
                 </fieldset>
                 <div class='form-group'>
-                    <button class='btn btn-outline-info' type="submit">Sign in</button>
+                    <button class='btn btn-primary' type="submit">Sign in</button>
                 </div>
             </form>
             <div class='border-top-pt3'>
                 <small class='text-muted'>
-                    Not registered? <a href="{% url 'register' %}">Sign in</a>
+                    <span class="badge badge-danger mr-2 mb-2">Not registered? </span><a href="{% url 'register' %}"><span class="label label-pill label-primary">Sign up</span></a>
                 </small><br>
             </div>
         </div>
     </div>
 </main>
-
-    
 {% endblock %}

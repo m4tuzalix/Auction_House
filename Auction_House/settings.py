@@ -25,8 +25,7 @@ SECRET_KEY = 'g6zg01*9pbtm%vh^e!y+aw3+t@!cba+w92z*neg6r%$*bmvm9a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["https://ledi12auction.herokuapp.com/"]
 
 # Application definition
 
@@ -72,6 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Auction_House.wsgi.application'
+
 
 
 # Database
@@ -141,7 +141,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core/static/'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # tags
 TAGS_DIR = [
@@ -150,3 +150,6 @@ TAGS_DIR = [
 
 # Crispy forms
 CRISPY_FORMS = 'bootstrap4'
+
+import django_heroku
+django_heroku.settings(locals())

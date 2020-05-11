@@ -3,9 +3,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views import View
-from django.core.paginator import Paginator
-from .forms import AdvertForm
-from .models import Advert, Advert_Categories, Bought
+from .forms import AdvertForm, CommentsForm
+from .models import Advert, Advert_Categories, Bought, AdvertComments
+from users.views import Pagination
 from django.contrib.auth.models import User
 import json 
 
@@ -15,8 +15,12 @@ def main_web(request):
 
 def view_advert_base(request, pk, title):
     advert = Advert.objects.get(pk=pk)
+    comments = AdvertComments.objects.filter(user=advert.user)
+    rating = [comment.rating for comment in comments]
+        
     context = {
-        'advert':advert
+        'advert':advert,
+        'rating':round(sum(rating) / len(rating),1)
     }
     return render(request, "advert.html", context)
 
@@ -43,15 +47,13 @@ class SearchAdvertView(View):
 
     def post(self, request, *args, **kwargs):
             search_value = request.POST["search_value"]
-            found_adverts =  [obj for obj in Advert.objects.all() if search_value.casefold() in obj.title] #// creates new list
+            found_adverts =  Advert.objects.filter(title__icontains=search_value).order_by("id")
             if len(found_adverts) > 0:
-                paginator = Paginator(found_adverts, 10)
-                page_number = request.GET.get('page')
-                page_obj = paginator.get_page(page_number)
+                pagination = Pagination(request, found_adverts, 10)
                 context = {
-                    'found_adverts':page_obj,
+                    'objects':pagination[0],
                     'value':search_value,
-                    'range':paginator.page_range
+                    'range':pagination[1]
                 }
                 return render(request, self.template, context)
             else:
@@ -91,3 +93,27 @@ class BuyView(View):
             messages.error(request, "Something has gone wrong")
         return redirect("main")
     
+class AddComment(LoginRequiredMixin, View):
+    comment_form = CommentsForm
+    template = "comments.html"
+    
+    def get(self, request, *args, **kwargs):
+        form = self.comment_form()
+        return render(request, self.template, {"form":form})
+    
+    def post(self, request, *args, **kwargs):
+        form = self.comment_form(request.POST)
+        if form.is_valid():
+            bought_advert = Bought.objects.get(pk=int(self.kwargs["pk"]))
+            new_comment = form.save(commit=False)
+            new_comment.user = bought_advert.advert.user
+            new_comment.advert = bought_advert
+            new_comment.rating = int(request.POST["rate"])
+            new_comment.save()
+            messages.success(request, 'Your comments has been added')
+            bought_advert.comment = True
+            bought_advert.save()
+        else:
+            messages.warning(request, 'Something went wrong')
+        return redirect("main")
+        

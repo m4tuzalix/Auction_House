@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for advert in found_adverts %}
+            {% for advert in objects %}
                 <tr class="main_data">
                     <td><img src="{{advert.image.url}}" class="card-img-top"></td>
                     <td><a href="{{advert.absolute_path}}">{{advert.title}}</a></td>

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from datetime import datetime
 from PIL import Image
+from django.core.validators import MaxValueValidator, MinValueValidator 
 
 Advert_Categories = {
     ("B","Books"),
@@ -58,9 +59,18 @@ class Bought(models.Model):
     amount = models.IntegerField()
     price = models.FloatField()
     date = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), blank=True, null=True)
+    comment = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user} bought item'
+        return f'{self.user} - {self.advert.title} - {self.date}'
+
+class AdvertComments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    advert = models.ForeignKey(Bought, on_delete=models.CASCADE)
+    content = models.TextField(max_length = 200)
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    date = models.DateTimeField(default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), blank=True, null=True) 
+
 
 
 
